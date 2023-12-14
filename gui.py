@@ -1,12 +1,11 @@
 import tkinter
-import tkinter.messagebox
 import customtkinter
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-# import data_engine_test as det
 import authentication as auth
-import random
 import time
-import websocket_client as web_c
+import asyncio
+import websockets
+import websocket_server_random as websra
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -28,7 +27,8 @@ class App(customtkinter.CTk):
         self.grid_rowconfigure((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10), weight=1)
 
         # create tabviews
-        signin, overview, cristal, diode, export, settings = "Sign In", "Overview", "Cristal", "Diode", "Export", "Settings"
+        signin, overview, cristal, diode, export, settings = "Sign In", "Overview", "Cristal", \
+            "Diode", "Export", "Settings"
 
         self.tabview = customtkinter.CTkTabview(self, width=1100, height=580)
         self.tabview.grid(row=0, column=1, padx=(0, 0), pady=(0, 0))  # , sticky="nsew"
@@ -94,11 +94,8 @@ class App(customtkinter.CTk):
 
         self.entry_p = customtkinter.CTkEntry(self.tabview.tab(overview), placeholder_text="P Parameter")
         self.entry_p.grid(row=1, column=0, columnspan=1, padx=(10, 0), pady=(0, 0))
-        # self.random_value = customtkinter.CTkLabel(self.tabview.tab(overview), text=self.random_value)
-        # self.random_value.grid(row=0, column=2)
-        self.appearance_mode_label = customtkinter.CTkLabel(self.tabview.tab(overview), text=web_c.main())
-        self.appearance_mode_label.grid(row=0, column=10)
-
+        self.random_value = customtkinter.CTkLabel(self.tabview.tab(overview), text=self.main_websocket())
+        self.random_value.grid(row=0, column=2)
         self.entry_i = customtkinter.CTkEntry(self.tabview.tab(overview), placeholder_text="I Parameter")
         self.entry_i.grid(row=2, column=0, columnspan=1, padx=(10, 0), pady=(5, 0))
         self.entry_d = customtkinter.CTkEntry(self.tabview.tab(overview), placeholder_text="D Parameter")
@@ -119,7 +116,10 @@ class App(customtkinter.CTk):
         # disabling widgets
         self.entry_p.configure(state="disabled")
         # self.random_value.configure(text=self.randomisiert())
-        # self.after(1000, self.randomisiert)
+        # self.after(500, self.main_websocket())
+
+        asyncio.run(self.main_websocket())
+
     def open_input_dialog_event(self):
         dialog = customtkinter.CTkInputDialog(text="Type in a number:", title="CTkInputDialog")
         print("CTkInputDialog:", dialog.get_input())
@@ -131,7 +131,16 @@ class App(customtkinter.CTk):
         time.sleep(1)
         self.random_value = "{random.randint(0, 100)}"
 
+    async def main_websocket(self):
+        uri = "ws://localhost:8765"
+        async with websockets.connect(uri) as websocket:
+            print(f"Websocket on {uri} connected")
+            response = await websocket.recv()
+            # print(response)
+            self.random_value.configure(text=response)
+
 
 if __name__ == "__main__":
     app = App()
     app.mainloop()
+    # app.main_websocket()

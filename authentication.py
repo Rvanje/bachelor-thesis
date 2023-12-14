@@ -1,69 +1,66 @@
 # module to proceed user logins
+import users
 
-dict_user = {"999999": "Administrator",
-             "888888": "Service Technician",
-             "111111": "Leroy Harreh",
-             "222222": "Tobias Graetzer",
-             "333333": "Bojan Resan",
-             "1": ""}
+lst_auth = []
 
 
 def sign_in_button_event_1():
-    sign_in_authent("1")
+    sign_in_authenticator("1")
 
 
 def sign_in_button_event_2():
-    sign_in_authent("2")
+    sign_in_authenticator("2")
 
 
 def sign_in_button_event_3():
-    sign_in_authent("3")
+    sign_in_authenticator("3")
 
 
 def sign_in_button_event_4():
-    sign_in_authent("4")
+    sign_in_authenticator("4")
 
 
 def sign_in_button_event_5():
-    sign_in_authent("5")
+    sign_in_authenticator("5")
 
 
 def sign_in_button_event_6():
-    sign_in_authent("6")
+    sign_in_authenticator("6")
 
 
 def sign_in_button_event_7():
-    sign_in_authent("7")
+    sign_in_authenticator("7")
 
 
 def sign_in_button_event_8():
-    sign_in_authent("8")
+    sign_in_authenticator("8")
 
 
 def sign_in_button_event_9():
-    sign_in_authent("9")
+    sign_in_authenticator("9")
 
 
 def sign_in_button_event_0():
-    sign_in_authent("0")
-
-
-# psw += psw
-# if len(psw) == 6:
-#     psw, _ = sign_in_authent(psw)
-#     print(psw)
+    sign_in_authenticator("0")
 
 
 def sign_out_button_event():
     pass
 
 
-def sign_in_authent(psw):
-    psw = psw + psw
-    if len(psw) == 6:
+def sign_in_authenticator(psw):
+    lst_auth.append(psw)
+    if len(lst_auth) == 6:
+        code = "".join(lst_auth)
         try:
-            if psw in dict_user:
-                print("psw is: " + psw)
-                psw = ""
+            if code in users.dict_user:
+                print("Logged in as: " + users.dict_user[code])
+                lst_auth.clear()
+                return True
+            else:
+                print("Nope")
+                lst_auth.clear()
+                return False
         except KeyError:
-            print("User name or password not wrong or user not existing")
+            print("Nope")
+            lst_auth.clear()
