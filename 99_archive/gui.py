@@ -1,11 +1,8 @@
-import tkinter
 import customtkinter
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import authentication as auth
 import time
 import asyncio
 import websockets
-import websocket_server_random as websra
 
 customtkinter.set_appearance_mode("System")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
