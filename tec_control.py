@@ -1,5 +1,5 @@
 """
-
+Former example.py file of Meerstetter Engineering
 """
 import logging
 import platform
@@ -7,7 +7,7 @@ from time import time, sleep
 from mecom import MeComSerial, ResponseException, WrongChecksum
 from serial import SerialException
 from serial.serialutil import PortNotOpenError
-import threading
+# import RPi.GPIO as GPIO
 
 # default queries from command table below
 DEFAULT_QUERIES = [
@@ -41,7 +41,6 @@ class MeerstetterTEC(object):
         self.session().stop()
 
     def __init__(self, port=None, scan_timeout=30, channel=1, queries=DEFAULT_QUERIES, *args, **kwars):
-        print("TEC __init__")
         assert channel in (1, 2)
         self.channel = channel
         self.port = port
@@ -51,14 +50,13 @@ class MeerstetterTEC(object):
         self._connect()
 
     def _connect(self):
-        print("TEC Conected")
         # open session
         if self.port is not None:
             self._session = MeComSerial(serialport=self.port)
         else:
             if platform.system() != "Windows":
                 start_index = 0
-                base_name = "/dev/ttyUSB"
+                base_name = "/dev/ttyUSB"  # ttyUSB #ttyAMA0  #ttyS0
             else:
                 start_index = 1
                 base_name = "COM"
@@ -73,21 +71,24 @@ class MeerstetterTEC(object):
                         pass
                 if self._session is not None or (time() - scan_start_time) >= self.scan_timeout:
                     break
-                sleep(0.1) # 100 ms wait time between each scan attempt
+                sleep(0.5) # 100 ms wait time between each scan attempt
 
             if self._session is None:
                  raise PortNotOpenError
         # get device address
-        self.address = self._session.identify()
-        logging.info("connected to {}".format(self.address))
-
+        try:
+            self.address = self._session.identify()
+            print(self.address)
+            logging.info("connected to {}".format(self.address))
+        except:
+            pass
+            
     def session(self):
         if self._session is None:
             self._connect()
         return self._session
 
     def get_data(self):
-        print("get_data")
         data = {}
         for description in self.queries:
             id, unit = COMMAND_TABLE[description]
