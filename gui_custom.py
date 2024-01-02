@@ -8,7 +8,7 @@ from dataclasses import dataclass
 import tec_control as tec_ctrl
 import ldd_control as ldd_ctrl
 
-from gpiozero import CPUTemperature
+# from gpiozero import CPUTemperature
 
 # Implement the default Matplotlib key bindings.
 # from matplotlib.backend_bases import key_press_handler  # I.O.
