@@ -1,4 +1,4 @@
-This repository is ment to track the changes and back up the files for the programed files on the Raspberry PI.
+This repository is meant to track the changes and back up the files for the programed files on the Raspberry PI.
 
 Following files have been created and written by me:
 - exe.py
